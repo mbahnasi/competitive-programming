@@ -1,0 +1,62 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+// problem link: https://codeforces.com/contest/474/my
+// if he chooses to eat white flower, it will only be valid to eat k flowers.
+// if he chooses to eat a red flower, then he has no constraints on consecutivity
+// so the transition is :
+// white flower => move k steps , red flower => move 1 step
+// dp[i] denotes the number of possible arrangements
+// base case : break the recursive chain if length is negative
+// first precompute the answer for every length then the answer of a range would be the sum of answer in this range
+// so to accomplish this we can use partial sums by doing prefix and hanling the mod and overflow
+
+
+const ll mod = 1e9+7, N = 1e5+5 ;
+
+ll k , dp[N] , a, b;
+
+ll tasty(ll i) {
+    //base case:
+    if (i == 0) return 1 ;
+    if (i < 0) return 0 ;
+    // dp magic:
+    if (dp[i] != -1) return dp[i] ;
+    //transition:
+    ll white = tasty(i-k)%mod; //take white
+    ll red = tasty(i-1)%mod ; // take red
+    ll ans = (white + red)%mod ;
+    // ans ++;
+    return dp[i] = ans%mod ;
+}
+
+void solve() {
+    int t ;cin>> t;
+    cin >>  k ;
+    memset(dp, -1 , sizeof(dp)) ;
+    for (int i=0 ;i<= 1e5 ;i++) tasty(i) ;
+    vector<ll>pre(N) ;
+    for (int i=1 ;i<= 1e5 ;i++) {
+        pre[i] = (pre[i-1] + dp[i])%mod ;
+    }
+    while (t--) {
+        cin >> a >> b ;
+        //handling the case that pre[b] is less than pre[a-1]
+        cout << (pre[b] - pre[a-1]+mod)%mod <<'\n' ;
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r",stdin);
+    freopen("output.txt", "w",stdout);
+#endif
+    int tc ;
+    tc = 1 ;
+    // cin >> tc >> k ;
+    while (tc--) solve();
+}
