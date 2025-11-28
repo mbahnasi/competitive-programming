@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int N =102  , K = 1002;
+int n, k, r, unitsInRack[102] ,dp[N][K] ;
+
+// link: https://www.spoj.com/problems/FOODIE/
+// you just need to modify the poroblem to be a straight knapsack problem
+// capacity of knapsack is K and every item value and wieght are the units.
+// dp[i][remK] gives us the maximum units can be eaten
+
+int knapStomach(int i, int remK) {
+    // base case:
+    if (i >= n)return 0;
+    //dp magic :
+    if (dp[i][remK] != -1) return dp[i][remK] ;
+    //transition
+    int ch1 = -1e9 ;
+    if (remK - unitsInRack[i] >= 0)ch1 = unitsInRack[i] + knapStomach(i+1, remK - unitsInRack[i]) ;
+    int ch2 = knapStomach(i+1, remK) ;
+    return dp[i][remK] = max(ch1, ch2) ;
+}
+
+void solve() {
+    cin>> n>> k ;
+    memset(unitsInRack, 0, sizeof(unitsInRack));
+    for (int i= 0 ;i<n ;i++) {
+        cin >> r ;
+        while (r--) {
+            int x ;cin >> x ;
+            unitsInRack[i] += x ;
+        }
+    }
+    memset(dp, -1 ,sizeof(dp)) ;
+    cout << knapStomach(0, k)<<'\n';
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r",stdin);
+    freopen("output.txt", "w",stdout);
+#endif
+    int tc;
+    cin >> tc ;
+    // tc = 1;
+    while (tc--) solve();
+}
