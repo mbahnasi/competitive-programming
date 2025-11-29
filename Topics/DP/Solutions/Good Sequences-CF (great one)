@@ -1,0 +1,86 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+//problem link:https://codeforces.com/contest/265/problem/D 
+
+// find the longest subsequence that :
+// every number has a prime factor with its next element ( gcd(sub[i], sub[i+1] >1)
+// to do that you need to link the numbers that has the same primes some way
+// you can prime factorize like :
+// normal factorization of each number and only for each prime save the idicies of numbers that are multiples of t
+// you can do this by a container of factors and a container of primes map of sets or array of sets
+// it makes sense to take only here and don`t leave as the taking will give you all valid subsets
+// dp is one dimensional, dp[i] = Longest subsequence
+
+
+const int N = 1e5+5 ;
+int dp[N], arr[N], n ;
+set<int> idxOfMultiplesOfPrimes[N], primesOfNumbers[N] ; // this is an array of sets
+// idxOfMultiplesOfPrimes[i] gives us a set with the indices of multiples of the prime number i
+// primesOfNumbers[i] gives us a set with the primes factors of the number in the index i in the input array
+
+int LongestGood(int i) {
+    // base case
+    // no need here for a base case because we gave a value to the dp before making the transition
+
+
+    // dp magic:
+    int &ret= dp[i] ;
+    if (ret != -1) return ret ;
+
+    // transiton
+
+    ret = 1 ; // if i came here that means that theis current element is a part of some sequence so i need to return 1 at least.
+
+    // the take process : you iterate over the prime factors of the current i and for each prime see if there is a number x in the array after the
+    // current arr[i] (x has a greater index than i), then if there exists such x you jump to it and maximize the answer of the best choice from here
+    for (auto j : primesOfNumbers[i]) {
+        auto it = idxOfMultiplesOfPrimes[j].upper_bound(i) ;
+        if (it!= idxOfMultiplesOfPrimes[j].end()) {
+            ret = max(ret, 1+LongestGood(*it)) ;// take and leave happens here
+        }
+    }
+    return ret ;
+}
+
+void solve() {
+    cin >> n ;
+    for (auto &i : arr)cin >> i ;
+    memset(dp , -1 , sizeof(dp)) ;
+
+    // factorization
+    for (int i=0 ;i<n ;i++) {
+        int x = arr[i] ;
+        for (int j =2 ;j*j <= N ;j++) {
+            while (x % j == 0) {
+                idxOfMultiplesOfPrimes[j].emplace(i) ;
+                primesOfNumbers[i].emplace(j) ;
+                x /= j ;
+            }
+        }
+        if (x >1) {
+            idxOfMultiplesOfPrimes[x].emplace(i) ;
+            primesOfNumbers[i].emplace(x) ;
+        }
+    }
+    int ans = 1 ;
+    for (int i =0 ;i< n;i++) {
+        ans = max(ans, LongestGood(i)) ; // try to start the subset with each elements once, and choose the longest subset
+    }
+    cout << ans;
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r",stdin);
+    freopen("output.txt", "w",stdout);
+#endif
+    int tc;
+    //cin >> tc ;
+    tc = 1;
+    while (tc--) solve();
+}
