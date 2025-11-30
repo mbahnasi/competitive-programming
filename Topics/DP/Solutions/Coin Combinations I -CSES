@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+/*  اللهم اجعل هذا في سبيلك  */
+
+// link:https://cses.fi/problemset/result/15441502/
+// this is so similar to dice combinations but with an array of choices to transit to
+// you will only transit if possible
+// if you reached the base case that means that this is a valid combination
+// what i benifit from these two problems that:
+// if you have a feeling of looping circularly on some values, consider these values as choices to transit
+
+const int N = 1e6 +4, mod = 1e9+7 ;
+int n, x, coins[105], dp[N] ;
+
+int numWays(int sum) {
+    // base case
+    if (sum == x)return 1 ;
+    // dp magic :
+    if (~dp[sum]) return dp[sum] ;
+    // transition:
+    int ans = 0 ;
+    for (int i=0 ;i< n;i++) {
+        if (sum + coins[i] <= x)
+            ans = (ans + numWays(sum + coins[i]))%mod ;
+    }
+    return dp[sum] = ans ;
+}
+
+void solve() {
+    cin >> n >> x ;
+    for (int i=0 ;i< n;i++) cin>> coins[i] ;
+    memset(dp, -1, sizeof(dp)) ;
+    cout << numWays(0) ;
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r",stdin);
+    freopen("output.txt", "w",stdout);
+#endif
+    int tc;
+    //cin >> tc ;
+    tc = 1;
+    while (tc--) solve();
+}
