@@ -1,0 +1,48 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+/*  اللهم اجعل هذا في سبيلك  */
+
+// link:https://cses.fi/problemset/task/1633
+//the idea here is in the transition as there are 6 options to transit
+
+const int N = 1e6 + 4, mod = 1e9 +7 ;
+int n , dp[N] ;
+int idx(int i) {
+    return i>= 7 ? 1 : i ;
+}
+
+int numOfways(int sum) {
+    // base case:
+    if (sum == n) return 1 ;
+    // dp magic:
+    int &dpp = dp[sum] ;
+    if (~dpp) return dpp ;
+    // transition:
+    int ans = 0 ;
+    for (int j=1 ;j<= 6 ;j++) {
+        if (sum +j <= n)
+            ans = (ans + numOfways(sum + j))%mod ;
+    }
+    return dpp = ans %mod ;
+}
+
+void solve() {
+    cin >> n ;
+    memset(dp, -1 ,  sizeof(dp)) ;
+    cout << numOfways(0) ;
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r",stdin);
+    freopen("output.txt", "w",stdout);
+#endif
+    int tc;
+    //cin >> tc ;
+    tc = 1;
+    while (tc--) solve();
+}
