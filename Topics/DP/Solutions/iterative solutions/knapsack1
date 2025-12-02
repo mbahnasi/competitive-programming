@@ -1,0 +1,55 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+/*  اللهم اجعل هذا في سبيلك  */
+
+// link : https://atcoder.jp/contests/math-and-algorithm/tasks/dp_d
+// here the dp is iterative( tabulation )
+// you need to try every possible index with every size of the knapsack
+// a knapsack of size 5 can be divided into subknapsacks : 4 , 3,  2, 1
+// dp[i][curSz] = max val until this current index and the current size of the knapsack
+
+void solve() {
+    int n, W ;
+    cin>> n>> W ;
+    ll val[n], w[n] ;
+    for (int i=0 ;i<n; i++) {
+        cin >> w[i] >> val[i] ;
+    }
+    ll dp[n+2][W+2] ;
+    memset(dp, 0,sizeof(dp)) ;
+    //push dp: current index go to calculate the next index
+    for (int i=0; i<n ;i++)
+        for (int curSz=0 ;curSz<= W;curSz++) {
+            // take
+            if (w[i] + curSz <= W)
+                dp[i+1][curSz+w[i]] = max(dp[i+1][curSz+w[i]], val[i]+ dp[i][curSz]) ;
+            // leave
+            dp[i+1][curSz] =max(dp[i+1][curSz], dp[i][curSz]) ;
+        }
+    ll ans = 0 ;
+    for (int i= 0 ;i<=W ;i++) ans = max(ans, dp[n][i]) ;
+    // here the last row is n as you make dp[i+1], so (n-1) +1 is n
+    cout << ans  ;
+    // pull dp
+    // you will use one based index and change the transition to
+    // take : dp[i][curSz] = max(dp[i][curSz], val[i]+dp[i-1][curSz - w[i]] ) "if you can take"
+    // "you will find your answer from previous answers"
+    // leave : dp[i][curSz] = max(dp[i][curSz], dp[i-1][curSz])
+
+
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r",stdin);
+    freopen("output.txt", "w",stdout);
+#endif
+    int tc;
+    //cin >> tc ;
+    tc = 1;
+    while (tc--) solve();
+}
