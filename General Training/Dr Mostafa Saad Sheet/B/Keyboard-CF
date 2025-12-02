@@ -1,0 +1,79 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+/*  اللهم اجعل هذا في سبيلك  */
+
+// good problem
+//problem link:https://codeforces.com/contest/88/problem/B
+// the idea is to find the best way for every character to type it uppercase, then answer the query string s
+// if the lowercase of s[i] doesn't exist in the grid return -1
+// if it is upper case then change it to lower and see the precomputed best distance
+// if the distance is greater than x the increase the ans by 1
+// to do this : 1- save the places of 'S'
+// then iterate over the grid and for each chracter that is not 'S' minimize the distance between it and the 'S'
+// then answer the queries as said above
+// "using array instead of map would be a better solution"
+// time complexity: hence the total accessing the inner loop of Ss doesn't exceed the frequency of 'S'
+// so the total times of accessing of the three loops can't exceed n*m
+// the sqrt takes log(43) at maximum ,and another log(26) for map
+// so total time complexity is n*m*log(sqrt(n^2 + m^2) * log(26) which suit the constraint
+
+void solve() {
+    int n, m, x;
+    cin>> n>> m >> x ;
+    char a[n][m] ;
+    vector<pair<int,int>> Ss;
+    for (int i =0 ; i< n;i++) {
+        for (int j=0 ; j<m ;j++) {
+            cin >> a[i][j] ;
+            if (a[i][j] == 'S') Ss.emplace_back(i,j);
+        }
+    }
+    map<char, double> mp ;
+    for (int i=0 ;i<n ;i++) {
+        for (int j=0 ;j<m ;j++) {
+            if (a[i][j] == 'S') continue;
+            if (!mp[a[i][j]]) mp[a[i][j]] =  1e9 ;
+            for (auto [fst,scnd] : Ss) {
+                int firstTerm = (i-fst) * (i-fst) ;
+                int scndTerm = (j-scnd)*(j-scnd) ;
+                double root = sqrt(firstTerm + scndTerm) ;
+                mp[a[i][j]] = min(mp[a[i][j]] ,root);
+            }
+        }
+    }
+    int q ;cin >> q ;
+    string s;cin >> s ;
+    int c =0 ;
+
+    for (int i=0 ;i<q ;i++) {
+        char z = s[i] ;
+        z = tolower(z) ;
+        if (!mp[z]) {
+            cout << -1 ; return ;
+        }
+        if (isupper(s[i])) {
+            if (Ss.empty()) {
+                cout << -1 ; return ;
+            }
+            if (mp[z] > x ) {
+                c++ ;
+            }
+        }
+    }
+    cout << c ;
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r",stdin);
+    freopen("output.txt", "w",stdout);
+#endif
+    int tc;
+    //cin >> tc ;
+    tc = 1;
+    while (tc--) solve();
+}
