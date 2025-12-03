@@ -1,0 +1,60 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+/*  اللهم اجعل هذا في سبيلك  */
+
+//problem link : https://atcoder.jp/contests/dp/tasks/dp_e
+// this is a knapsack problem that it's constraints can't be applied on the normal solution
+// as the max weight can go up to 1e9, you can't make dp[100][1e9]
+// that the dp mininmizes at the ith item and the current sum
+// dp[i][sum] = min weight till i and sum
+// then after filling the table you search for the maximum sum that suits the capacity of knapsack
+// it is garantueed that this is in the last row in the table ( row n )
+
+const int V = 1e5 + 5 ;
+ll dp[105][V] ;
+void solve() {
+    int n, W ;cin >> n >> W ;
+    ll v[n] , w[n] ;
+    ll mxSum = 0;
+    for (int i=0 ;i<n ;i++) {
+        cin >> w[i] >> v[i];
+        mxSum+= v[i] ;
+    }
+    //base case:
+    for (int i=0 ;i<=n ;i++)
+        for (int j=0 ;j<=mxSum;j++) dp[i][j]= 1e9 ;
+    dp[0][0] = 0 ;
+
+    // push dp:
+
+    for (int i=0 ;i<n ;i++)
+        for (int sum = 0 ;sum <= mxSum ;sum ++) {
+            // take
+            if (v[i] + sum <= mxSum)
+                dp[i+1][sum+v[i]] = min(dp[i+1][sum+v[i]], w[i] + dp[i][sum]) ;
+            // leave
+            dp[i+1][sum] = min(dp[i+1][sum], dp[i][sum]) ;
+        }
+
+    int ans =0 ;
+
+    for (int sum = 0 ;sum <= mxSum ;sum ++)
+            if (dp[n][sum] != 0 && dp[n][sum] <= W) ans = max(ans, sum) ;
+
+    cout << ans ;
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r",stdin);
+    freopen("output.txt", "w",stdout);
+#endif
+    int tc;
+    //cin >> tc ;
+    tc = 1;
+    while (tc--) solve();
+}
