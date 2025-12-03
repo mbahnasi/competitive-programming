@@ -1,0 +1,45 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+/*  اللهم اجعل هذا في سبيلك  */
+
+// Combinations II
+// problem link : https://cses.fi/problemset/task/1636/
+// dp[sum] = number of ways to build this sum % mod
+// the array of coins are the choices of transition
+// base case : the number of ways you can build zero is 1 (take no coin)
+// the problem wants you to count 2+3 and 3+2 as they are not different combinations
+const int mod = 1e9 + 7;
+
+void solve() {
+    int n, x;
+    cin >> n >> x;
+    int c[n];
+    for (int i = 0; i < n; i++) cin >> c[i];
+    int dp[x + 5];
+    memset(dp, 0, sizeof(dp));
+    // pull dp
+    dp[0] = 1;
+    sort(c, c+n) ;
+    for (int j = 0; j < n; j++) {
+        for (int sum =0 ;sum <= x ;sum ++ ) {
+            if (sum - c[j] >=0)
+                dp[sum] = (dp[sum] + dp[sum - c[j]]) % mod; // take
+        }
+    }
+    cout << dp[x];
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r",stdin);
+    freopen("output.txt", "w",stdout);
+#endif
+    int tc;
+    //cin >> tc ;
+    tc = 1;
+    while (tc--) solve();
+}
