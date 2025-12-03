@@ -1,0 +1,48 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+/*  اللهم اجعل هذا في سبيلك  */
+
+// link : https://atcoder.jp/contests/dp/tasks/dp_h
+// definition : dp[i][j] = by how many ways you can get to (i,j)
+// transition : take the down step or take the right step
+// base case : dp[0][0] = 1 as you can always go to grid[0][0]
+// the basic idea is to take the choice of moving right or down when you can choose it ( when it's .)
+
+const int mod = 1e9 + 7 ;
+void solve() {
+    int n, m ;
+    cin >> n >> m;
+    char grid[n][m] ;
+    for (int i=0 ;i<n ;i++) for (int j=0 ;j<m ;j++) cin >> grid[i][j] ;
+    int dp[n+1][m+1] ;
+    memset(dp, 0, sizeof(dp)) ;
+
+    auto idx = [&](int i, int j) {
+      return i < n && j < m ;
+    };
+    dp[0][0] =1 ;
+    for (int i =0 ;i<n ;i++) {
+        for (int j= 0 ;j<m;j++) {
+            if (idx(i+1, j) &&grid[i+1][j] != '#') // take it
+                dp[i+1][j] = (dp[i+1][j] + dp[i][j]) %mod  ;
+            if (idx(i, j+1) &&grid[i][j+1] != '#') // take it
+                dp[i][j+1]= (dp[i][j+1] +  dp[i][j]) %mod ;
+        }
+    }
+    cout << dp[n-1][m-1] ;
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r",stdin);
+    freopen("output.txt", "w",stdout);
+#endif
+    int tc;
+    //cin >> tc ;
+    tc = 1;
+    while (tc--) solve();
+}
