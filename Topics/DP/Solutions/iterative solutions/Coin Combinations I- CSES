@@ -1,0 +1,42 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+/*  اللهم اجعل هذا في سبيلك  */
+
+// problem link : https://cses.fi/problemset/task/1635
+// here you need to try int how many way you can build the current sum
+// dp[sum] = number of ways to build this sum % mod
+// the array of coins are the choices of transition
+// base case : the number of ways you can build zero is 1 (take no coin)
+
+const int mod =1e9+7 ;
+void solve() {
+    int n, x ;cin >> n >> x;
+    int c[n] ;
+    for (int i=0 ;i< n;i++) cin >> c[i] ;
+    int dp[x+5] ;
+    memset(dp, 0, sizeof(dp));
+    // push dp
+    dp[0] =1 ;
+    for (int sum =0 ;sum<=x ;sum++) {
+        for (int j= 0 ;j<n ;j++) {// take the current j and leave the others
+            if (sum + c[j] <= x)
+                dp[sum + c[j]] = (dp[sum+c[j]] + dp[sum])%mod ; // take
+        }
+    }
+    cout << dp[x] ;
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r",stdin);
+    freopen("output.txt", "w",stdout);
+#endif
+    int tc;
+    //cin >> tc ;
+    tc = 1;
+    while (tc--) solve();
+}
