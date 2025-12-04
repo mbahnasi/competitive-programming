@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+/*  اللهم اجعل هذا في سبيلك  */
+
+// very good problem
+// link : https://codeforces.com/problemset/problem/414/B
+
+//you need to try every possible length with every possible last element
+// dp[len][last] = number of good sequences that ends with length = len, and last element = len
+// you can ensure to take good elements by saving them in any container : factors[i] is a vector that saves the factors of i
+// base case trick: all sequences of length one is good so we assign 1 to them
+// answer trick : the problem needs you to give number of possible good sequences of length k no matter what is the last element of these.
+// the dp gives you the number of ways to get good sequences of length k and last element ( 1, 2, 3... or n)
+// so you need to consider all of these not just dp[k][n] as answer
+// so the answer is summation of the dp[k][i]  i = ( 1 to n)
+
+const int mod  = 1e9+7 ;
+int dp[2002][2002] ;
+void solve() {
+    int n, k ;cin >> n >> k ;
+    for (int i =1 ;i<=n ;i++){
+        dp[1][i] =1 ;
+    }
+    vector<int> factors[n+2];
+    for (int i=1 ;i<=n ;i++)
+        for (int j= i ;j<=n ;j++)
+            if (j%i == 0) factors[j].emplace_back(i) ;
+
+
+    for (int len = 1 ;len <= k ;len ++)
+        for (int i=1 ;i<=n ;i++)
+            for (auto j :factors[i]) {
+                dp[len+1][i] = (dp[len+1][i]+dp[len][j]) %mod ;
+            }
+
+    int ans =0 ;
+    for (int i=1 ;i<= n ;i++) ans = (ans +dp[k][i]) %mod ;
+    cout << ans ;
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r",stdin);
+    freopen("output.txt", "w",stdout);
+#endif
+    int tc;
+    //cin >> tc ;
+    tc = 1;
+    while (tc--) solve();
+}
