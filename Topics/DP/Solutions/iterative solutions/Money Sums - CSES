@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+/*  اللهم اجعل هذا في سبيلك  */
+
+// link : https://cses.fi/problemset/result/15497473/
+
+// we need to count the number of sums can be built by these coins
+// notice that you must not repeat using a coin that you used before
+// Make 2d dp : dp[i][sum] defines "is this sum can be built or not at the current index i
+// apply take and leave
+
+void solve() {
+    int n; cin >> n ;
+    int coins[n];
+    int s =0 ;
+    for (int i=0 ;i<n ;i++) {
+        cin >> coins[i] ; s+= coins[i] ;
+    }
+    bool dp[n+2][s+5] ;
+    memset(dp, 0, sizeof(dp)) ;
+    // definition is dp[i][sum] this sum was taken or no
+    // base case:
+    for (int i=0 ;i<n ;i++) dp[i][0] =1 ;
+
+    for (int i=0 ;i<n ;i++)
+        for (int sum = 0 ;sum <= s;sum ++) {
+            dp[i+1][sum+coins[i]] = max(dp[i+1][sum+coins[i]], dp[i][sum]) ;
+            dp[i+1][sum] = max(dp[i+1][sum], dp[i][sum]) ;
+        }
+    set<int> v ;// using set to ensure counting each available sum only once.
+    for (int j=0 ;j<=n ; j++)
+        for (int i=1 ;i<=s ;i++) {
+            if (dp[j][i]) {
+                v.emplace(i) ;
+            }
+        }
+    cout << v.size()<<'\n' ;
+    for (auto i :  v) cout << i <<' ' ;
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r",stdin);
+    freopen("output.txt", "w",stdout);
+#endif
+    int tc;
+    //cin >> tc ;
+    tc = 1;
+    while (tc--) solve();
+}
