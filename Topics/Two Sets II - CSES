@@ -1,0 +1,45 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+/*  اللهم اجعل هذا في سبيلك  */
+
+//link : https://cses.fi/problemset/task/1093/
+// you need to calc in how many ways you can build  ( n * ( n+1 ) /4 )
+// dp definition : dp[i][sum] number of ways to calculate sum using fist i numbers
+const int mod = 1e9 +7 ;
+void solve() {
+    int n ; cin >> n ;
+    int x = n * (n+1)/2 ;
+    int dp[x+3][503];
+    memset(dp, 0,sizeof(dp)) ;
+    if (x%2 == 1) {
+        cout << 0;
+        return ;
+    }
+    x/=2 ;
+    dp[0][1] =1 ;
+    for (int sum = 0 ;sum <= x ;sum ++) {
+        for (int i=1 ;i<n ;i++){
+            if (sum +i <= x)
+                dp[sum+i][i+1] =(dp[sum +i][i+1]+dp[sum][i]) % mod ;
+            dp[sum][i+1] = (dp[sum][i+1] + dp[sum][i]) %mod ;
+        }
+    }
+
+
+    cout << dp[x][n] ;
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r",stdin);
+    freopen("output.txt", "w",stdout);
+#endif
+    int tc;
+    //cin >> tc ;
+    tc = 1;
+    while (tc--) solve();
+}
