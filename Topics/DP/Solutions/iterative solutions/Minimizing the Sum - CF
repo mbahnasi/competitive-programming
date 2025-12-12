@@ -1,0 +1,57 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+/*  اللهم اجعل هذا في سبيلك  */
+// link : https://codeforces.com/contest/1969/problem/C
+
+void gvMax(ll & x, ll &y) {
+    x = max(x, y);
+}
+void gvMin(ll &x, ll y) {
+    x= min(x, y) ;
+}
+
+void solve() {
+    int n , k ;cin >> n >> k;
+    ll a[n] ;
+    for (auto &i : a) cin >> i ;
+    ll dp[n+2][k+2] ;
+    // first row is zero then all is infinity (base case)
+    memset(dp, 0, sizeof(dp)) ;
+    for (int i=1 ;i<=n+1 ;i++) {
+        for (int j=0 ;j<=k+1 ;j++) {
+            dp[i][j] = 1e18;
+        }
+    }
+
+    // dp definition : dp[i][j] is minimum sum so far
+
+    for (int i=0 ;i<n ; i++)
+        for (int j= 0 ;j<= k ;j++) {
+
+            // note that you can take from the array after modifying
+            // so you try the best sum for the next segment of length d
+            ll mn = 1e18 ;
+            for (int d=0 ; d+i<n && d+j <= k ;d++ ) {
+                mn = min(mn, a[i+d]) ;
+                gvMin(dp[i+d+1][j+d], dp[i][j] + mn *(d+1)) ;
+            }
+        }
+    ll ans =1e18 ;
+    for (int j=0 ;j<= k ;j++) ans = min (dp[n][j] , ans) ;
+    cout << ans << '\n' ;
+}
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r",stdin);
+    freopen("output.txt", "w",stdout);
+#endif
+    int tc;
+    tc = 1;
+    cin >> tc ;
+    while (tc--) solve();
+}
